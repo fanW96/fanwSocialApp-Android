@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">fanwSocialApp</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <!-- 共享过度动画 -->
+    <string name="transition_photos">transition_animation_news_photos</string>
+
+    <!--menu activity_base_drawer-->
+    <string name="personality">个性化</string>
+    <string name="tools">设置</string>
+    <string name="about">关于</string>
+    <string name="night_mode">夜间模式</string>
+    <string name="news">新闻</string>
+    <string name="photo">图片</string>
+    <string name="essay">博文</string>
+    <string name="message">消息</string>
+    <string name="comment">评论</string>
+    <string name="search">搜索</string>
+
+    <string name="photo_collections">图集：%1$s</string>
+</resources>
