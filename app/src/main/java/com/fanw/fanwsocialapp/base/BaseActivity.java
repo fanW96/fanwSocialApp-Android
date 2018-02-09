@@ -26,6 +26,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fanw.fanwsocialapp.R;
+import com.fanw.fanwsocialapp.activity.HomeActivity;
+import com.fanw.fanwsocialapp.activity.NewsActivity;
+import com.fanw.fanwsocialapp.activity.PhotoActivity;
 import com.fanw.fanwsocialapp.application.MyApplication;
 import com.fanw.fanwsocialapp.util.MyUtils;
 import com.fanw.fanwsocialapp.widget.RoundImageView;
@@ -67,6 +70,7 @@ public abstract class BaseActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         int layoutId = getLayoutId();
         setContentView(layoutId);
+        initViews();
         //获取application
         myApplication = (MyApplication)getApplication();
         //初始化toolbar
@@ -149,10 +153,13 @@ public abstract class BaseActivity extends AppCompatActivity
 
         switch (id){
             case R.id.nav_essay:
+                mClass = HomeActivity.class;
                 break;
             case R.id.nav_news:
+                mClass = NewsActivity.class;
                 break;
             case R.id.nav_photo:
+                mClass = PhotoActivity.class;
                 break;
             case R.id.nav_message:
                 break;

@@ -1,4 +1,4 @@
-package com.fanw.fanwsocialapp.model;
+package com.fanw.fanwsocialapp.callback;
 
 import java.io.Serializable;
 

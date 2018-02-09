@@ -22,4 +22,14 @@
     <string name="search">搜索</string>
 
     <string name="photo_collections">图集：%1$s</string>
+
+    <string name="retry_refresh_news">试试重新加载</string>
+
+    <string name="news_from">%1$s %2$s</string>
+
+    <string name="photo_news">图片新闻</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="photo_detail_title">%1$d/%2$d　%3$s</string>
 </resources>

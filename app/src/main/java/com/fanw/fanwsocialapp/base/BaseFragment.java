@@ -120,8 +120,8 @@ public class BaseFragment<T> extends Fragment {
         super.onDestroy();
     }
 
-    protected List<T> getNetDate(){
-        return null;
+    protected void getNetDate(){
+        
     }
 
 }

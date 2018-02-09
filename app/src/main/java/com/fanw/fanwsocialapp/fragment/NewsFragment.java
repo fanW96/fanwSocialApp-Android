@@ -1,9 +1,10 @@
 package com.fanw.fanwsocialapp.fragment;
 
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,13 +13,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.fanw.fanwsocialapp.R;
+import com.fanw.fanwsocialapp.activity.NewsDetailActivity;
+import com.fanw.fanwsocialapp.activity.NewsPhotoDetailActivity;
 import com.fanw.fanwsocialapp.adapter.NewsAdapter;
 import com.fanw.fanwsocialapp.base.BaseFragment;
-import com.fanw.fanwsocialapp.base.BaseTask;
 import com.fanw.fanwsocialapp.callback.JsonCallback;
 import com.fanw.fanwsocialapp.listener.OnItemClickListener;
 import com.fanw.fanwsocialapp.model.NewsInfo;
-import com.fanw.fanwsocialapp.model.NewsReceiver;
+import com.fanw.fanwsocialapp.callback.NewsReceiver;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.model.Response;
 
@@ -32,6 +34,7 @@ public class NewsFragment extends BaseFragment<NewsInfo>{
 
     private NewsAdapter newsAdapter;
     private List<NewsInfo> temp;
+    private static int page = 0;
 
     public static NewsFragment NewsInstance(String param) {
         NewsFragment fragment = new NewsFragment();
@@ -69,6 +72,7 @@ public class NewsFragment extends BaseFragment<NewsInfo>{
             @Override
             public void onRefresh() {
                 mList.clear();
+                page = 0;
                 new LatestNewsTask().execute();
             }
         });
@@ -90,7 +94,16 @@ public class NewsFragment extends BaseFragment<NewsInfo>{
         public void onItemClick(int position , View v) {
             switch (v.getId()){
                 case R.id.news_title_tv:
-                    Snackbar.make(v,"tran", Snackbar.LENGTH_LONG).show();
+                    Intent intent = new Intent(mAct,NewsDetailActivity.class);
+                    intent.putExtra("news_data",mList.get(position));
+                    startActivity(intent);
+                    break;
+                case R.id.news_photo_iv_left:
+                case R.id.news_photo_iv_middle:
+                case R.id.news_photo_iv_right:
+                    Intent intent1 = new Intent(mAct, NewsPhotoDetailActivity.class);
+                    intent1.putExtra("news_data",mList.get(position));
+                    startActivity(intent1);
                     break;
                 /*case R.id.cv_Delete:
                     Snackbar.make(v,"del",Snackbar.LENGTH_LONG).show();
@@ -112,6 +125,7 @@ public class NewsFragment extends BaseFragment<NewsInfo>{
             int lastVisibleItemPosition = linearLayoutManager.findLastVisibleItemPosition();
             if (!loading && totalItemCount < (lastVisibleItemPosition + 3)){
                 loading =true;
+                page = page+20;
                 new LatestNewsTask().execute();
             }
         }
@@ -123,19 +137,18 @@ public class NewsFragment extends BaseFragment<NewsInfo>{
     }
 
     @Override
-    protected List<NewsInfo> getNetDate() {
-        OkGo.<NewsReceiver<List<NewsInfo>>>get(url)//添加泛型
+    protected void getNetDate() {
+        OkGo.<NewsReceiver<List<NewsInfo>>>get("http://c.m.163.com/nc/article/headline/T1348647909107/"+page+"-20.html")//添加泛型
                 .tag(this)
                 .execute(new JsonCallback<NewsReceiver<List<NewsInfo>>>() {//编写需要的返回方法，在里面做OnSuccessConvert
                     @Override
                     public void onSuccess(Response<NewsReceiver<List<NewsInfo>>> response) {
-                        temp = response.body().getT1348647909107();
+                        mMoreList = response.body().getT1348647909107();
                     }
                 });
-        return temp;
     }
 
-    public class LatestNewsTask extends BaseTask<NewsInfo>{
+    protected class LatestNewsTask extends AsyncTask<Integer,Void,List<NewsInfo>>{
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -173,7 +186,7 @@ public class NewsFragment extends BaseFragment<NewsInfo>{
 
         @Override
         protected List<NewsInfo> doInBackground(Integer... integers) {
-            mMoreList = getNetDate();
+            getNetDate();
             try {
                 Thread.sleep(1000);//沉睡一秒
             } catch (InterruptedException e) {

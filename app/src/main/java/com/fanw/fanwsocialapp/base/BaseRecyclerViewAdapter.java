@@ -102,4 +102,8 @@ public class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<RecyclerVie
             progressBar = itemView.findViewById(R.id.footer_progressBar);
         }
     }
+
+    public List<T> getList() {
+        return mList;
+    }
 }

@@ -28,4 +28,20 @@ public class Constants {
 
     public static final String NEWS_LINK = "news_link";
     public static final String NEWS_TITLE = "news_title";
+
+    public static final String NEWS_COLUMN = "热点新闻";
+    public static final String VIDEO_COLUMN = "休闲视频";
+
+    public static final String NEWS_URL = "http://c.m.163.com/nc/article/headline/T1348647909107/0-20.html";
+    public static final String VIDEO_URL = "http://gank.io/api/data/休息视频/10/1";
+    public static final String PHOTO_URL = "http://gank.io/api/data/福利/10/1";
+
+    public static final String ESSAY_URL = "159.89.150.30:8888/";
+    public static final String ESSAY_USER ="user";
+    public static final String ESSAY_RELATION ="relation";
+    public static final String ESSAY_PROFILE ="profile";
+    public static final String ESSAY_PIC ="pic";
+    public static final String ESSAY_MAIL ="mail";
+    public static final String ESSAY_CONTENT ="essay";
+    public static final String ESSAY_comment ="comment";
 }

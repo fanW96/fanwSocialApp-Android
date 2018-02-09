@@ -92,7 +92,7 @@ public class SplashActivity extends AppCompatActivity {
                     @Override
                     public void accept(Long aLong) throws Exception {
                         //                        页面跳转
-                        startActivity(new Intent(SplashActivity.this, BaseActivity.class));
+                        startActivity(new Intent(SplashActivity.this, HomeActivity.class));
                         overridePendingTransition(0, android.R.anim.fade_out);
                         finish();
                     }

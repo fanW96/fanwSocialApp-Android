@@ -66,4 +66,24 @@ dependencies {
 // Because RxAndroid releases are few and far between, it is recommended you also
 // explicitly depend on RxJava's latest version for bug fixes and new features.
     compile 'io.reactivex.rxjava2:rxjava:2.1.9'
+    /*
+    * 第三方媒体播放器依赖
+    * *//*
+    // required, enough for most devices.
+    compile 'tv.danmaku.ijk.media:ijkplayer-java:0.8.4'
+    compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.8.4'
+    // Other ABIs: optional
+    compile 'tv.danmaku.ijk.media:ijkplayer-armv5:0.8.4'
+    compile 'tv.danmaku.ijk.media:ijkplayer-arm64:0.8.4'
+    compile 'tv.danmaku.ijk.media:ijkplayer-x86:0.8.4'
+    compile 'tv.danmaku.ijk.media:ijkplayer-x86_64:0.8.4'*/
+
+    compile project(':superplayerlibrary')
+
+    /*
+    * 第三方的滑动退出预览的layout
+    * */
+    compile 'com.github.oxoooo:pull-back-layout:1.0.1'
+    compile 'com.github.chrisbanes:PhotoView:1.2.6'
+
 }

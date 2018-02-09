@@ -257,7 +257,7 @@ public class NewsAdapter extends BaseRecyclerViewAdapter<NewsInfo> {
         }
     }
 
-    class PhotoViewHolder extends RecyclerView.ViewHolder {
+    class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView news_photo_title_tv;
         LinearLayout news_photo_iv_group;
         ImageView news_photo_iv_left;
@@ -273,7 +273,16 @@ public class NewsAdapter extends BaseRecyclerViewAdapter<NewsInfo> {
             news_photo_iv_middle = itemView.findViewById(R.id.news_photo_iv_middle);
             news_photo_iv_right = itemView.findViewById(R.id.news_photo_iv_right);
             news_photo_ptime_tv = itemView.findViewById(R.id.news_photo_ptime_tv);
+            news_photo_iv_left.setOnClickListener(this);
+            news_photo_iv_middle.setOnClickListener(this);
+            news_photo_iv_right.setOnClickListener(this);
+        }
 
+        @Override
+        public void onClick(View v) {
+            if (mOnItemClickListener != null) {
+                mOnItemClickListener.onItemClick(getAdapterPosition() , v);
+            }
         }
     }
 }
