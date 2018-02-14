@@ -2,6 +2,7 @@
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/login_view"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@drawable/login_bg"
@@ -31,7 +32,6 @@
             <EditText android:id="@+id/login_input_ep"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
                 android:textColor="@color/colorCard"
                 android:hint="Email/Phone" />
         </android.support.design.widget.TextInputLayout>

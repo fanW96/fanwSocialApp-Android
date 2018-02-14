@@ -16,12 +16,14 @@
         layout="@layout/login_activity_group"
         android:id="@+id/login_activity_group_include"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:visibility="visible"/>
 
     <include
         layout="@layout/user_info"
         android:id="@+id/user_info_include"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
 
 </LinearLayout>

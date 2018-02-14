@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    style="@style/news_card_view"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:cardBackgroundColor="@color/item_background"
+    app:cardElevation="2dp"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
+            <com.fanw.fanwsocialapp.widget.CircleImageView
+                android:id="@+id/essay_photo_user_head"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                app:civ_border_width="1dp"
+                app:civ_border_color="@color/alpha_05_black"
+                android:src="@drawable/avatar"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/essay_photo_user_head"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/essay_photo_user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/medium"
+                    android:text="fanw"/>
+                <TextView
+                    android:id="@+id/essay_photo_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/small"
+                    android:text="time"/>
+            </LinearLayout>
+            <TextView
+                android:id="@+id/essay_photo_thumbs_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/medium"
+                android:text="20"
+                android:layout_marginTop="10dp"
+                android:layout_toLeftOf="@+id/essay_photo_thumbs_pic"/>
+
+            <ImageView
+                android:id="@+id/essay_photo_thumbs_pic"
+                android:layout_marginTop="5dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/thumbs_raw"
+                android:layout_alignParentRight="true"
+                android:visibility="visible" />
+
+        </RelativeLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <View
+                android:layout_height="2px"
+                android:background="@color/alpha_35_black"
+                android:layout_width="match_parent"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="3dp"/>
+            <TextView
+                android:id="@+id/essay_photo_content"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/medium"
+                android:textColor="@color/black"
+                android:text="123456"/>
+            <LinearLayout
+                android:id="@+id/essay_photo_iv_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="left">
+                <com.fanw.fanwsocialapp.widget.SquareImageView
+                    android:id="@+id/essay_photo_iv_left"
+                    style="@style/news_photo_iv"
+                    tools:src="@mipmap/ic_launcher"/>
+
+                <com.fanw.fanwsocialapp.widget.SquareImageView
+                    android:id="@+id/essay_photo_iv_middle"
+                    style="@style/news_photo_iv"
+                    tools:src="@mipmap/ic_launcher"/>
+
+                <com.fanw.fanwsocialapp.widget.SquareImageView
+                    android:id="@+id/essay_photo_iv_right"
+                    style="@style/news_photo_iv"
+                    tools:src="@mipmap/ic_launcher"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+
+
+</android.support.v7.widget.CardView>

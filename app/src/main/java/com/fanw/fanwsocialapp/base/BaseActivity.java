@@ -27,13 +27,18 @@ import android.widget.Toast;
 
 import com.fanw.fanwsocialapp.R;
 import com.fanw.fanwsocialapp.activity.HomeActivity;
+import com.fanw.fanwsocialapp.activity.LoginActivity;
 import com.fanw.fanwsocialapp.activity.NewsActivity;
 import com.fanw.fanwsocialapp.activity.PhotoActivity;
+import com.fanw.fanwsocialapp.activity.RegisterActivity;
 import com.fanw.fanwsocialapp.application.MyApplication;
 import com.fanw.fanwsocialapp.util.MyUtils;
+import com.fanw.fanwsocialapp.widget.CircleImageView;
 import com.fanw.fanwsocialapp.widget.RoundImageView;
 import com.lzy.okgo.OkGo;
 import com.squareup.leakcanary.RefWatcher;
+
+import org.w3c.dom.Text;
 
 public abstract class BaseActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, DrawerLayout.DrawerListener {
@@ -52,13 +57,14 @@ public abstract class BaseActivity extends AppCompatActivity
     protected  LinearLayout user_info;
     protected View drawHeader;
     protected FloatingActionButton mFloatingActionButton;
-    private TextView login_tv;
-    private TextView register_tv;
-    private View login_view;
-    private View user_view;
-    private RoundImageView hd_avatar;
-    private LinearLayout ups_count;
-    private LinearLayout fans_count;
+    protected TextView login_tv;
+    protected TextView register_tv;
+    protected View login_view;
+    protected View user_view;
+    protected CircleImageView hd_avatar;
+    protected TextView hd_name;
+//    protected LinearLayout ups_count;
+//    protected LinearLayout fans_count;
     MyApplication myApplication;
 
     public abstract int getLayoutId();
@@ -106,12 +112,10 @@ public abstract class BaseActivity extends AppCompatActivity
         login_tv.setOnClickListener(this);
         register_tv.setOnClickListener(this);
         user_view = (View) drawHeader.findViewById(R.id.user_info_include);
-        hd_avatar = (RoundImageView)user_view.findViewById(R.id.hd_avatar);
-        fans_count = (LinearLayout)user_view.findViewById(R.id.fans_count);
-        ups_count = (LinearLayout)user_view.findViewById(R.id.ups_count);
+        hd_avatar = (CircleImageView) user_view.findViewById(R.id.hd_avatar);
+        hd_name = (TextView)user_view.findViewById(R.id.hd_name);
         hd_avatar.setOnClickListener(this);
-        fans_count.setOnClickListener(this);
-        ups_count.setOnClickListener(this);
+        hd_name.setOnClickListener(this);
     }
 
     @Override
@@ -185,17 +189,24 @@ public abstract class BaseActivity extends AppCompatActivity
     @Override
     public void onClick(View v) {
         int id = v.getId();
+        Intent intent = new Intent();
         switch (id){
             case R.id.login_activity:
+                intent = new Intent(this, LoginActivity.class);
+                startActivity(intent);
                 break;
             case R.id.register_activity:
+                intent = new Intent(this, RegisterActivity.class);
+                startActivity(intent);
                 break;
             case R.id.hd_avatar:
                 break;
-            case R.id.fans_count:
+            case R.id.hd_name:
                 break;
-            case R.id.ups_count:
-                break;
+//            case R.id.fans_count:
+//                break;
+//            case R.id.ups_count:
+//                break;
             default:
         }
     }

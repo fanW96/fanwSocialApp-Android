@@ -1,5 +1,7 @@
 package com.fanw.fanwsocialapp.callback;
 
+import com.fanw.fanwsocialapp.model.PhotoGirl;
+
 import java.io.Serializable;
 import java.util.List;
 
