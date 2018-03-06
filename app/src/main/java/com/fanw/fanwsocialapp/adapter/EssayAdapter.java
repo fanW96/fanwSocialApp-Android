@@ -21,6 +21,7 @@ import com.fanw.fanwsocialapp.common.Constants;
 import com.fanw.fanwsocialapp.listener.OnItemClickListener;
 import com.fanw.fanwsocialapp.model.Essay;
 import com.fanw.fanwsocialapp.util.DimenUtil;
+import com.fanw.fanwsocialapp.util.MyUtils;
 import com.fanw.fanwsocialapp.widget.CircleImageView;
 import com.fanw.fanwsocialapp.widget.SquareImageView;
 import com.lzy.okgo.OkGo;
@@ -78,7 +79,7 @@ public class EssayAdapter extends BaseRecyclerViewAdapter<Essay> {
         final Essay essay = mList.get(position);
         holder.essay_item_user_name.setText(essay.getUser().getUser_name());
         holder.essay_item_time.setText(essay.getEssay_date().toString());
-        holder.essay_item_thumbs_count.setText(essay.getEssay_thumbs()+"");
+        holder.essay_item_thumbs_count.setText(String.valueOf(essay.getEssay_thumbs()));
         holder.essay_item_content.setText(essay.getEssay_content());
         GlideApp.with(context)
                 .load(Constants.ESSAY_URL+Constants.ESSAY_HEAD+essay.getUser().getUser_head())
@@ -119,7 +120,7 @@ public class EssayAdapter extends BaseRecyclerViewAdapter<Essay> {
     private void setTextView(final PicEssayVIewHolder holder, final Essay essay){
         holder.essay_photo_user_name.setText(essay.getUser().getUser_name());
         holder.essay_photo_time.setText(essay.getEssay_date().toString());
-        holder.essay_photo_thumbs_count.setText(essay.getEssay_thumbs()+"");
+        holder.essay_photo_thumbs_count.setText(String.valueOf(essay.getEssay_thumbs()));
         holder.essay_photo_content.setText(essay.getEssay_content());
         holder.essay_photo_thumbs_pic.setOnClickListener(new View.OnClickListener() {
             @Override

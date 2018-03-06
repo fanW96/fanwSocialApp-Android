@@ -7,7 +7,7 @@
 
     <com.fanw.fanwsocialapp.widget.SquareImageView
         android:id="@+id/item_add_iv"
-        android:layout_width="80dp"
+        android:layout_width="100dp"
         android:layout_height="0dp"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_add_a_photo"/>

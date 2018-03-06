@@ -32,12 +32,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/medium"
+                    android:textColor="@color/black"
                     android:text="fanw"/>
                 <TextView
                     android:id="@+id/essay_photo_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/small"
+                    android:textColor="@color/alpha_40_black"
                     android:text="time"/>
             </LinearLayout>
             <TextView
@@ -45,6 +47,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/medium"
+                android:textColor="@color/alpha_40_black"
                 android:text="20"
                 android:layout_marginTop="10dp"
                 android:layout_toLeftOf="@+id/essay_photo_thumbs_pic"/>

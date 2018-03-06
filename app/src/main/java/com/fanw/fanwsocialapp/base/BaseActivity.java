@@ -3,6 +3,7 @@ package com.fanw.fanwsocialapp.base;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -25,13 +26,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.fanw.fanwsocialapp.R;
 import com.fanw.fanwsocialapp.activity.HomeActivity;
 import com.fanw.fanwsocialapp.activity.LoginActivity;
 import com.fanw.fanwsocialapp.activity.NewsActivity;
 import com.fanw.fanwsocialapp.activity.PhotoActivity;
 import com.fanw.fanwsocialapp.activity.RegisterActivity;
+import com.fanw.fanwsocialapp.application.GlideApp;
 import com.fanw.fanwsocialapp.application.MyApplication;
+import com.fanw.fanwsocialapp.common.Constants;
 import com.fanw.fanwsocialapp.util.MyUtils;
 import com.fanw.fanwsocialapp.widget.CircleImageView;
 import com.fanw.fanwsocialapp.widget.RoundImageView;
@@ -39,6 +44,8 @@ import com.lzy.okgo.OkGo;
 import com.squareup.leakcanary.RefWatcher;
 
 import org.w3c.dom.Text;
+
+import java.io.File;
 
 public abstract class BaseActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, DrawerLayout.DrawerListener {
@@ -116,6 +123,23 @@ public abstract class BaseActivity extends AppCompatActivity
         hd_name = (TextView)user_view.findViewById(R.id.hd_name);
         hd_avatar.setOnClickListener(this);
         hd_name.setOnClickListener(this);
+
+        final File current_user= new File("/data/data/"+getPackageName()+"/shared_prefs","current_user.xml");
+        if (current_user.exists()){
+            login_view.setVisibility(View.GONE);
+            user_view.setVisibility(View.VISIBLE);
+            SharedPreferences pre = getSharedPreferences("current_user", Context.MODE_PRIVATE);
+            if(!pre.getString("user_head","").equals(Constants.ESSAY_URL+Constants.ESSAY_HEAD)){
+                GlideApp.with(this)
+                        .load(pre.getString("user_head",""))
+                        .placeholder(R.drawable.ic_loading)
+                        .error(R.drawable.ic_load_fail)
+                        .format(DecodeFormat.PREFER_ARGB_8888)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(hd_avatar);
+            }
+            hd_name.setText(pre.getString("user_name",""));
+        }
     }
 
     @Override

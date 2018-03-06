@@ -19,12 +19,12 @@ import uk.co.senab.photoview.PhotoView;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link NewsPhotoDetailFragment.OnFragmentInteractionListener} interface
+ * {@link EssayPhotoDetailFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link NewsPhotoDetailFragment#newInstance} factory method to
+ * Use the {@link EssayPhotoDetailFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class NewsPhotoDetailFragment extends Fragment{
+public class EssayPhotoDetailFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -34,13 +34,12 @@ public class NewsPhotoDetailFragment extends Fragment{
     private String mParam1;
 //    private String mParam2;
 
+    private OnFragmentInteractionListener mListener;
+    private View essay_photo_detail;
     private PhotoView mPhotoView;
-    private View news_photo_detail;
     private ProgressBar mProgressBar;
 
-    private OnFragmentInteractionListener mListener;
-
-    public NewsPhotoDetailFragment() {
+    public EssayPhotoDetailFragment() {
         // Required empty public constructor
     }
 
@@ -50,11 +49,11 @@ public class NewsPhotoDetailFragment extends Fragment{
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment NewsPhotoDetailFragment.
+     * @return A new instance of fragment EssayPhotoDetailFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static NewsPhotoDetailFragment newInstance(String param1) {
-        NewsPhotoDetailFragment fragment = new NewsPhotoDetailFragment();
+    public static EssayPhotoDetailFragment newInstance(String param1) {
+        EssayPhotoDetailFragment fragment = new EssayPhotoDetailFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
 //        args.putString(ARG_PARAM2, param2);
@@ -75,10 +74,10 @@ public class NewsPhotoDetailFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        news_photo_detail = inflater.inflate(R.layout.fragment_news_photo_detail, container, false);
-        mPhotoView = news_photo_detail.findViewById(R.id.news_photo_detail_view);
-        mProgressBar = news_photo_detail.findViewById(R.id.news_photo_progress_bar);
-        return news_photo_detail;
+        essay_photo_detail = inflater.inflate(R.layout.fragment_essay_photo_detail, container, false);
+        mPhotoView = essay_photo_detail.findViewById(R.id.essay_photo_detail_view);
+        mProgressBar = essay_photo_detail.findViewById(R.id.essay_photo_progress_bar);
+        return essay_photo_detail;
     }
 
     @Override

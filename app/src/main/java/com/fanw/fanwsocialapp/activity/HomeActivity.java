@@ -56,7 +56,7 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     public void initViews() {
-        mEmptyView = findViewById(R.id.essay_rv);
+        mEssayRv = findViewById(R.id.essay_rv);
         mEmptyView = findViewById(R.id.essay_empty_view);
         mSwipeRefreshLayout = findViewById(R.id.essay_swipe_refresh_layout);
         mFloat = findViewById(R.id.essay_fab);
@@ -65,22 +65,22 @@ public class HomeActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final File current_user= new File("/data/data/"+getPackageName()+"/shared_prefs","current_user.xml");
-        if (current_user.exists()){
-            login_view.setVisibility(View.GONE);
-            user_view.setVisibility(View.VISIBLE);
-            SharedPreferences pre = getSharedPreferences("current_user", Context.MODE_PRIVATE);
-            if(!pre.getString("user_head","").equals(Constants.ESSAY_URL+Constants.ESSAY_HEAD)){
-                GlideApp.with(this)
-                        .load(pre.getString("user_head",""))
-                        .placeholder(R.drawable.ic_loading)
-                        .error(R.drawable.ic_load_fail)
-                        .format(DecodeFormat.PREFER_ARGB_8888)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(hd_avatar);
-            }
-            hd_name.setText(pre.getString("user_name",""));
-        }
+//        final File current_user= new File("/data/data/"+getPackageName()+"/shared_prefs","current_user.xml");
+//        if (current_user.exists()){
+//            login_view.setVisibility(View.GONE);
+//            user_view.setVisibility(View.VISIBLE);
+//            SharedPreferences pre = getSharedPreferences("current_user", Context.MODE_PRIVATE);
+//            if(!pre.getString("user_head","").equals(Constants.ESSAY_URL+Constants.ESSAY_HEAD)){
+//                GlideApp.with(this)
+//                        .load(pre.getString("user_head",""))
+//                        .placeholder(R.drawable.ic_loading)
+//                        .error(R.drawable.ic_load_fail)
+//                        .format(DecodeFormat.PREFER_ARGB_8888)
+//                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+//                        .into(hd_avatar);
+//            }
+//            hd_name.setText(pre.getString("user_name",""));
+//        }
         context = getApplicationContext();
         mEssayAdapter = new EssayAdapter(essayList,context);
         mEssayRv.setHasFixedSize(true);
@@ -152,6 +152,9 @@ public class HomeActivity extends BaseActivity {
                 case R.id.essay_photo_iv_left:
                 case R.id.essay_photo_iv_middle:
                 case R.id.essay_photo_iv_right:
+                    Intent intent = new Intent(context,EssayPhotoDetailActivity.class);
+                    intent.putExtra("essay_data",essayList.get(position));
+                    startActivity(intent);
                     break;
                 /*case R.id.cv_Delete:
                     Snackbar.make(v,"del",Snackbar.LENGTH_LONG).show();
