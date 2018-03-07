@@ -3,11 +3,13 @@ package com.fanw.fanwsocialapp.activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.hardware.ConsumerIrManager;
+import android.os.AsyncTask;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.ButtonBarLayout;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -17,14 +19,20 @@ import android.widget.TextView;
 import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.fanw.fanwsocialapp.R;
+import com.fanw.fanwsocialapp.adapter.CommentAdapter;
 import com.fanw.fanwsocialapp.application.GlideApp;
 import com.fanw.fanwsocialapp.common.Constants;
+import com.fanw.fanwsocialapp.listener.OnItemClickListener;
+import com.fanw.fanwsocialapp.model.Comment;
 import com.fanw.fanwsocialapp.model.Essay;
 import com.fanw.fanwsocialapp.widget.CircleImageView;
 import com.fanw.fanwsocialapp.widget.SquareImageView;
 import com.lzy.imagepicker.ImagePicker;
 
 import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class EssaySingleActivity extends AppCompatActivity {
 
@@ -48,6 +56,9 @@ public class EssaySingleActivity extends AppCompatActivity {
     private CircleImageView essay_single_playButton_user_head;
     private CollapsingToolbarLayoutState state;
     private Context mContext;
+    private List<Comment> commentList = new ArrayList<Comment>();
+    private List<Comment> moreCommentList = new ArrayList<Comment>();
+    private CommentAdapter commentAdapter;
 
     private enum CollapsingToolbarLayoutState {
         EXPANDED,
@@ -118,14 +129,59 @@ public class EssaySingleActivity extends AppCompatActivity {
                 }
             }
         });
+
+        commentAdapter = new CommentAdapter(commentList,mContext);
+        essay_single_comments.setHasFixedSize(true);
+        essay_single_comments.setLayoutManager(new LinearLayoutManager(mContext));
+        essay_single_comments.setAdapter(commentAdapter);
+        commentAdapter.setOnItemClickListener(onItemClickListener);
+        //设置初始状态加载动画
         comments_swipe.setColorSchemeColors(Color.RED,Color.BLUE);
         comments_swipe.post(new Runnable() {
             @Override
             public void run() {
                 comments_swipe.setRefreshing(true);
+                new LatestCommentTask().execute();
             }
         });
     }
+
+    //等待后端添加分页属性
+    /*RecyclerView.OnScrollListener mScrollListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            LinearLayoutManager linearLayoutManager = (LinearLayoutManager)recyclerView.getLayoutManager();
+            //获得全部以获得的Item数量
+            int totalItemCount = linearLayoutManager.getItemCount();
+            //后的当前可见的Item的position
+            int lastVisibleItemPosition = linearLayoutManager.findLastVisibleItemPosition();
+            if (!loading && totalItemCount < (lastVisibleItemPosition + 3)){
+                loading =true;
+                page = page+20;
+                new LatestEssayTask().execute();
+            }
+        }
+    };*/
+
+    /**
+     * Item点击监听
+     */
+    private OnItemClickListener onItemClickListener = new OnItemClickListener() {
+        @Override
+        public void onItemClick(int position , View v) {
+            switch (v.getId()){
+                case R.id.comment_item_user_head:
+                    //获得user_id打开个人界面
+                default:
+                /*case R.id.cv_Delete:
+                    Snackbar.make(v,"del",Snackbar.LENGTH_LONG).show();
+                    mList.remove(position);
+                    newsAdapter.notifyDataSetChanged();
+                    break;*/
+            }
+        }
+    };
 
     private void initSight() {
         essay_single_user_name.setText(mEssay.getUser().getUser_name());
@@ -167,5 +223,55 @@ public class EssaySingleActivity extends AppCompatActivity {
                 .placeholder(R.mipmap.ic_launcher)
                 .error(R.drawable.ic_load_fail)
                 .into(essay_single_iv_right);
+    }
+
+    protected void getNetData(){
+
+    }
+
+    protected class LatestCommentTask extends AsyncTask<Integer,Void,List<Comment>>{
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            //需要修改后端添加分页属性
+            /*if(commentList != null&&commentList.size()>0){
+                //添加footer
+                commentList.add(null);
+                // notifyItemInserted(int position)，这个方法是在第position位置
+                // 被插入了一条数据的时候可以使用这个方法刷新，
+                // 注意这个方法调用后会有插入的动画，这个动画可以使用默认的，也可以自己定义。
+                commentAdapter.notifyItemInserted(commentList.size() -1);
+            }*/
+        }
+
+        @Override
+        protected void onPostExecute(List<Comment> comments) {
+            super.onPostExecute(comments);
+            if(comments_swipe != null){
+                comments_swipe.setRefreshing(false);
+            }
+            if(commentList.size() == 0){
+                commentList.addAll(comments);
+                commentAdapter.notifyDataSetChanged();
+            }else{
+                //删除footer
+                commentList.remove(commentList.size() -1);
+                commentList.addAll(comments);
+                commentAdapter.notifyDataSetChanged();
+//                loading =false;
+            }
+        }
+
+        @Override
+        protected List<Comment> doInBackground(Integer... integers) {
+            getNetData();
+            try {
+                Thread.sleep(1500);//沉睡一秒
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return moreCommentList;
+        }
     }
 }

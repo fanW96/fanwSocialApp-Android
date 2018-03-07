@@ -146,8 +146,8 @@ public class HomeActivity extends BaseActivity {
         @Override
         public void onItemClick(int position , View v) {
             switch (v.getId()){
-                case R.id.essay_item_content:
-                case R.id.essay_photo_content:
+                case R.id.essay_item_user_head:
+                case R.id.essay_photo_user_head:
                     break;
                 case R.id.essay_photo_iv_left:
                 case R.id.essay_photo_iv_middle:
@@ -156,6 +156,10 @@ public class HomeActivity extends BaseActivity {
                     intent.putExtra("essay_data",essayList.get(position));
                     startActivity(intent);
                     break;
+                default:
+                    Intent essaySingle = new Intent(context,EssaySingleActivity.class);
+                    essaySingle.putExtra("essay_single",essayList.get(position));
+                    startActivity(essaySingle);
                 /*case R.id.cv_Delete:
                     Snackbar.make(v,"del",Snackbar.LENGTH_LONG).show();
                     mList.remove(position);
