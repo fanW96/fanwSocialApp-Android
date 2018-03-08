@@ -1,10 +1,13 @@
 package com.fanw.fanwsocialapp.activity;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.hardware.ConsumerIrManager;
 import android.os.AsyncTask;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,6 +24,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.fanw.fanwsocialapp.R;
 import com.fanw.fanwsocialapp.adapter.CommentAdapter;
 import com.fanw.fanwsocialapp.application.GlideApp;
+import com.fanw.fanwsocialapp.callback.EssayReceiver;
+import com.fanw.fanwsocialapp.callback.JsonCallback;
 import com.fanw.fanwsocialapp.common.Constants;
 import com.fanw.fanwsocialapp.listener.OnItemClickListener;
 import com.fanw.fanwsocialapp.model.Comment;
@@ -28,6 +33,8 @@ import com.fanw.fanwsocialapp.model.Essay;
 import com.fanw.fanwsocialapp.widget.CircleImageView;
 import com.fanw.fanwsocialapp.widget.SquareImageView;
 import com.lzy.imagepicker.ImagePicker;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.model.Response;
 
 import org.w3c.dom.Text;
 
@@ -172,7 +179,17 @@ public class EssaySingleActivity extends AppCompatActivity {
         public void onItemClick(int position , View v) {
             switch (v.getId()){
                 case R.id.comment_item_user_head:
-                    //获得user_id打开个人界面
+                    Intent intent = new Intent(mContext,PersonalActivity.class);
+                    intent.putExtra("user_id",commentList.get(position).getUser().getUser_id());
+                    startActivity(intent);
+                case R.id.new_comment_send:
+                    SharedPreferences pre = getSharedPreferences("current_user", Context.MODE_PRIVATE);
+                    int user_id = pre.getInt("user_id",0);
+                    String comment_content = new_comment_content.getText().toString();
+                    if (user_id != 0 && !comment_content.equals("")){
+                        createOneComment(comment_content,user_id,mEssay.getEssay_id());
+                    }
+
                 default:
                 /*case R.id.cv_Delete:
                     Snackbar.make(v,"del",Snackbar.LENGTH_LONG).show();
@@ -182,6 +199,25 @@ public class EssaySingleActivity extends AppCompatActivity {
             }
         }
     };
+
+    private void createOneComment(String comment_content,int user_id,int essay_id){
+        OkGo.<EssayReceiver>post(Constants.ESSAY_URL+Constants.ESSAY_comment+"/create")
+                .tag(this)
+                .params("user_id",user_id)
+                .params("essay_id",essay_id)
+                .params("comment_content",comment_content)
+                .execute(new JsonCallback<EssayReceiver>() {
+                    @Override
+                    public void onSuccess(Response<EssayReceiver> response) {
+                        if (response.body().getCode() == 200 && response.body().getMsg().equals("success")){
+                            comments_swipe.setRefreshing(true);
+                            new LatestCommentTask().execute();
+                        }else {
+                            Snackbar.make(getWindow().getDecorView(),response.body().getMsg(),Snackbar.LENGTH_LONG).show();
+                        }
+                    }
+                });
+    }
 
     private void initSight() {
         essay_single_user_name.setText(mEssay.getUser().getUser_name());
@@ -226,7 +262,14 @@ public class EssaySingleActivity extends AppCompatActivity {
     }
 
     protected void getNetData(){
-
+        OkGo.<EssayReceiver>get(Constants.ESSAY_URL+Constants.ESSAY_comment+"/showAll")
+                .tag(this)
+                .execute(new JsonCallback<EssayReceiver>() {
+                    @Override
+                    public void onSuccess(Response<EssayReceiver> response) {
+                        moreCommentList = response.body().getCommentList();
+                    }
+                });
     }
 
     protected class LatestCommentTask extends AsyncTask<Integer,Void,List<Comment>>{

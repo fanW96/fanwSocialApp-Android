@@ -32,6 +32,7 @@ import com.fanw.fanwsocialapp.R;
 import com.fanw.fanwsocialapp.activity.HomeActivity;
 import com.fanw.fanwsocialapp.activity.LoginActivity;
 import com.fanw.fanwsocialapp.activity.NewsActivity;
+import com.fanw.fanwsocialapp.activity.PersonalActivity;
 import com.fanw.fanwsocialapp.activity.PhotoActivity;
 import com.fanw.fanwsocialapp.activity.RegisterActivity;
 import com.fanw.fanwsocialapp.application.GlideApp;
@@ -73,6 +74,7 @@ public abstract class BaseActivity extends AppCompatActivity
 //    protected LinearLayout ups_count;
 //    protected LinearLayout fans_count;
     MyApplication myApplication;
+    private int current_user_id;
 
     public abstract int getLayoutId();
 
@@ -139,6 +141,7 @@ public abstract class BaseActivity extends AppCompatActivity
                         .into(hd_avatar);
             }
             hd_name.setText(pre.getString("user_name",""));
+            current_user_id = pre.getInt("user_id",0);
         }
     }
 
@@ -224,6 +227,9 @@ public abstract class BaseActivity extends AppCompatActivity
                 startActivity(intent);
                 break;
             case R.id.hd_avatar:
+                intent = new Intent(this, PersonalActivity.class);
+                intent.putExtra("user_id",current_user_id);
+                startActivity(intent);
                 break;
             case R.id.hd_name:
                 break;

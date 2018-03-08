@@ -2,6 +2,7 @@ package com.fanw.fanwsocialapp.base;
 
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +31,7 @@ public class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<RecyclerVie
     //context,在子类中要可以获取，不能设置为private
     protected Context context;
     private LayoutInflater layoutInflater;
+    protected SharedPreferences pre;
 
     public BaseRecyclerViewAdapter(List<T> mList, Context context) {
         if (mList != null){
@@ -39,6 +41,7 @@ public class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<RecyclerVie
         }
         this.context = context;
         this.layoutInflater =  LayoutInflater.from(context);
+        pre = context.getSharedPreferences("current_user", Context.MODE_PRIVATE);
     }
 
     /*

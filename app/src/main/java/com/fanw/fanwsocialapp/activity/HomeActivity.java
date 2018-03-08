@@ -148,6 +148,9 @@ public class HomeActivity extends BaseActivity {
             switch (v.getId()){
                 case R.id.essay_item_user_head:
                 case R.id.essay_photo_user_head:
+                    Intent intent1 = new Intent(context,PersonalActivity.class);
+                    intent1.putExtra("user_id",essayList.get(position).getUser().getUser_id());
+                    startActivity(intent1);
                     break;
                 case R.id.essay_photo_iv_left:
                 case R.id.essay_photo_iv_middle:
