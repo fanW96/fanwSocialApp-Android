@@ -31,12 +31,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/medium"
+                    android:textColor="@color/black"
                     android:text="fanw"/>
                 <TextView
                     android:id="@+id/comment_item_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/small"
+                    android:textColor="@color/alpha_75_black"
                     android:text="time"/>
             </LinearLayout>
 

@@ -28,6 +28,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private String user_pwd;
     private String user_phone;
     private View mainView;
+    private int user_id;
 
     private void initView(){
         mainView = findViewById(R.id.register_view);
@@ -86,8 +87,24 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 .execute(new JsonCallback<EssayReceiver>() {
                     @Override
                     public void onSuccess(Response<EssayReceiver> response) {
+
                         if(response.body().getCode() == 200 && response.body().getMsg().equals("success")){
-                            finish();
+                            user_id = response.body().getUser().getUser_id();
+                            //后端给注册添加一个返回信息
+                            OkGo.<EssayReceiver>post(Constants.ESSAY_URL+Constants.ESSAY_PROFILE+"/createProfile")
+                                    .tag(this)
+                                    .params("user_id",user_id)
+                                    .execute(new JsonCallback<EssayReceiver>() {
+                                        @Override
+                                        public void onSuccess(Response<EssayReceiver> response) {
+                                            if(response.body().getCode() == 200 && response.body().getMsg().equals("success")){
+                                                finish();
+                                            }else {
+                                                Snackbar.make(mainView,response.body().getMsg(),Snackbar.LENGTH_LONG).show();
+                                            }
+                                        }
+                                    });
+//                            finish();
                         }else {
                             Snackbar.make(mainView,response.body().getMsg(),Snackbar.LENGTH_LONG).show();
                         }

@@ -35,6 +35,7 @@ import com.fanw.fanwsocialapp.activity.NewsActivity;
 import com.fanw.fanwsocialapp.activity.PersonalActivity;
 import com.fanw.fanwsocialapp.activity.PhotoActivity;
 import com.fanw.fanwsocialapp.activity.RegisterActivity;
+import com.fanw.fanwsocialapp.activity.SettingActivity;
 import com.fanw.fanwsocialapp.application.GlideApp;
 import com.fanw.fanwsocialapp.application.MyApplication;
 import com.fanw.fanwsocialapp.common.Constants;
@@ -203,6 +204,7 @@ public abstract class BaseActivity extends AppCompatActivity
             case R.id.nav_about:
                 break;
             case R.id.nav_setting:
+                mClass = SettingActivity.class;
                 break;
         }
 

@@ -28,6 +28,7 @@ import com.fanw.fanwsocialapp.listener.OnItemClickListener;
 import com.fanw.fanwsocialapp.model.Essay;
 import com.fanw.fanwsocialapp.model.Profile;
 import com.fanw.fanwsocialapp.model.User;
+import com.fanw.fanwsocialapp.widget.CircleImageView;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.model.Response;
 
@@ -36,7 +37,6 @@ import java.util.List;
 
 public class PersonalActivity extends AppCompatActivity {
     private int user_id;
-    View header;
     private ImageView person_modify_or_follow;
     private ImageView person_user_sex;
     private TextView person_user_name;
@@ -46,15 +46,17 @@ public class PersonalActivity extends AppCompatActivity {
     private TextView person_user_fan_count;
     private android.support.v7.widget.Toolbar mToolbar;
     private RecyclerView person_rv;
-    private FloatingActionButton mFab;
+    private CircleImageView person_user_head;
     private SwipeRefreshLayout person_swipe_refresh;
-    private Profile profile;
+    private Profile profile = new Profile();
     private List<Essay> essayList = new ArrayList<Essay>();
     private List<Essay> moreEssayList = new ArrayList<Essay>();
     private Context mContext;
     private PersonEssayAdapter personEssayAdapter;
     private int followCount = 0;
     private int fanCount = 0;
+    private int page = 1;
+    private boolean loading = false;
 
     private void initData(){
         user_id = getIntent().getIntExtra("user_id",0);
@@ -64,22 +66,21 @@ public class PersonalActivity extends AppCompatActivity {
     }
 
     private void initView(){
-        header = View.inflate(this,R.layout.head_person,null);
-        person_modify_or_follow = header.findViewById(R.id.person_modify_or_follow);
+        person_modify_or_follow = findViewById(R.id.person_modify_or_follow);
         person_modify_or_follow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 /*
-                * 点击打开信息编辑界面
+                * 点击打开信息编辑界面或者是添加关注和取消关注
                 * */
             }
         });
-        person_user_sex = header.findViewById(R.id.person_user_sex);
-        person_user_name = header.findViewById(R.id.person_user_name);
-        person_user_location = header.findViewById(R.id.person_user_location);
-        person_user_sign = header.findViewById(R.id.person_user_sign);
-        person_user_follow_count  =header.findViewById(R.id.person_user_follow_count);
-        person_user_fan_count = header.findViewById(R.id.person_user_fan_count);
+        person_user_sex = findViewById(R.id.person_user_sex);
+        person_user_name =findViewById(R.id.person_user_name);
+        person_user_location = findViewById(R.id.person_user_location);
+        person_user_sign = findViewById(R.id.person_user_sign);
+        person_user_follow_count  =findViewById(R.id.person_user_follow_count);
+        person_user_fan_count = findViewById(R.id.person_user_fan_count);
         person_user_follow_count.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,13 +98,13 @@ public class PersonalActivity extends AppCompatActivity {
             }
         });
         mToolbar = findViewById(R.id.person_toolbar);
-        mFab = findViewById(R.id.person_head_fab);
-        mFab.setOnClickListener(new View.OnClickListener() {
+        person_user_head = findViewById(R.id.person_user_head);
+        person_user_head.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext,PhotoDetailActivity.class);
                 intent.putExtra("picUrl",Constants.ESSAY_URL+Constants.ESSAY_HEAD+profile.getUser().getUser_head());
-                intent.putExtra("title","");
+                intent.putExtra("title","头像");
                 startActivity(intent);
             }
         });
@@ -116,21 +117,22 @@ public class PersonalActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal);
         mContext = getApplicationContext();
-        initData();
         initView();
+        initData();
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-        initProfile();
+//        initProfile();
         personEssayAdapter = new PersonEssayAdapter(essayList,mContext);
         person_rv.setHasFixedSize(true);
         person_rv.setLayoutManager(new LinearLayoutManager(mContext));
         person_rv.setAdapter(personEssayAdapter);
         personEssayAdapter.setOnItemClickListener(onItemClickListener);
-        personEssayAdapter.setHeaderView(header);
+        person_rv.addOnScrollListener(mScrollListener);
+//        personEssayAdapter.setHeaderView(header);
         //设置初始状态加载动画
         person_swipe_refresh.setColorSchemeColors(Color.RED,Color.BLUE);
         //下拉刷新
@@ -138,6 +140,7 @@ public class PersonalActivity extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 essayList.clear();
+                page = 1;
                 new LatestEssayTask().execute();
             }
         });
@@ -151,8 +154,10 @@ public class PersonalActivity extends AppCompatActivity {
         });
     }
 
+
+
     //等待后端添加分页属性
-    /*RecyclerView.OnScrollListener mScrollListener = new RecyclerView.OnScrollListener() {
+    RecyclerView.OnScrollListener mScrollListener = new RecyclerView.OnScrollListener() {
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
@@ -163,11 +168,11 @@ public class PersonalActivity extends AppCompatActivity {
             int lastVisibleItemPosition = linearLayoutManager.findLastVisibleItemPosition();
             if (!loading && totalItemCount < (lastVisibleItemPosition + 3)){
                 loading =true;
-                page = page+20;
+                page = page+1;
                 new LatestEssayTask().execute();
             }
         }
-    };*/
+    };
 
     /**
      * Item点击监听
@@ -210,11 +215,6 @@ public class PersonalActivity extends AppCompatActivity {
                     Intent essaySingle = new Intent(mContext,EssaySingleActivity.class);
                     essaySingle.putExtra("essay_single",essayList.get(position));
                     startActivity(essaySingle);
-                /*case R.id.cv_Delete:
-                    Snackbar.make(v,"del",Snackbar.LENGTH_LONG).show();
-                    mList.remove(position);
-                    newsAdapter.notifyDataSetChanged();
-                    break;*/
             }
         }
     };
@@ -226,7 +226,7 @@ public class PersonalActivity extends AppCompatActivity {
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .placeholder(R.mipmap.ic_launcher)
                 .error(R.drawable.ic_load_fail)
-                .into(mFab);
+                .into(person_user_head);
         SharedPreferences pre = getSharedPreferences("current_user", Context.MODE_PRIVATE);
         if (pre.getInt("user_id",0) != user_id){
             person_modify_or_follow.setImageResource(R.drawable.ic_add);
@@ -250,6 +250,7 @@ public class PersonalActivity extends AppCompatActivity {
                     public void onSuccess(Response<EssayReceiver> response) {
                         if (response.body().getCode() == 200 && response.body().getMsg().equals("success")){
                             followCount = response.body().getCount();
+                            getFanCount();
                         }
 //                        else {
 //                            Snackbar.make(getWindow().getDecorView(),response.body().getMsg(),Snackbar.LENGTH_LONG).show();
@@ -266,7 +267,8 @@ public class PersonalActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Response<EssayReceiver> response) {
                         if (response.body().getCode() == 200 && response.body().getMsg().equals("success")){
-                            followCount = response.body().getCount();
+                            fanCount = response.body().getCount();
+                            initProfile();
                         }
 //                        else {
 //                            Snackbar.make(getWindow().getDecorView(),response.body().getMsg(),Snackbar.LENGTH_LONG).show();
@@ -284,6 +286,7 @@ public class PersonalActivity extends AppCompatActivity {
                     public void onSuccess(Response<EssayReceiver> response) {
                         if (response.body().getCode() == 200 && response.body().getMsg().equals("success")){
                             profile = response.body().getProfile();
+                            getFollowCount();
                         }else {
                             Snackbar.make(getWindow().getDecorView(),response.body().getMsg(),Snackbar.LENGTH_LONG).show();
                         }
@@ -292,7 +295,7 @@ public class PersonalActivity extends AppCompatActivity {
     }
 
     private void getEssay(){
-        OkGo.<EssayReceiver>get(Constants.ESSAY_URL+Constants.ESSAY_CONTENT+"/showOneUser")
+        OkGo.<EssayReceiver>post(Constants.ESSAY_URL+Constants.ESSAY_CONTENT+"/showOneUser/"+page+"/5")
                 .params("user_id",user_id)
                 .tag(this)
                 .execute(new JsonCallback<EssayReceiver>() {
@@ -308,32 +311,34 @@ public class PersonalActivity extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
             //需要修改后端添加分页属性
-            /*if(essayList != null&&essayList.size()>0){
+            if(essayList != null&&essayList.size()>0){
                 //添加footer
 //                NewsInfo newsInfoTemp = new NewsInfo();
                 essayList.add(null);
                 // notifyItemInserted(int position)，这个方法是在第position位置
                 // 被插入了一条数据的时候可以使用这个方法刷新，
                 // 注意这个方法调用后会有插入的动画，这个动画可以使用默认的，也可以自己定义。
-                mEssayAdapter.notifyItemInserted(essayList.size() -1);
-            }*/
+                personEssayAdapter.notifyItemInserted(essayList.size() );
+            }
         }
 
         @Override
         protected void onPostExecute(List<Essay> essays) {
             super.onPostExecute(essays);
+
             if(person_swipe_refresh != null){
                 person_swipe_refresh.setRefreshing(false);
             }
             if(essayList.size() == 0){
                 essayList.addAll(essays);
+                moreEssayList.clear();
                 personEssayAdapter.notifyDataSetChanged();
             }else{
                 //删除footer
                 essayList.remove(essayList.size() -1);
                 essayList.addAll(essays);
                 personEssayAdapter.notifyDataSetChanged();
-//                loading =false;
+                loading =false;
             }
         }
 

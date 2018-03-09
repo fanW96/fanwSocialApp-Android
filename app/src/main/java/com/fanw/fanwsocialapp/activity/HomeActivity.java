@@ -46,8 +46,8 @@ public class HomeActivity extends BaseActivity {
     private List<Essay> essayList = new ArrayList<Essay>();
     private List<Essay> moreEssayList = new ArrayList<Essay>();
     private FloatingActionButton mFloat;
-//    private int page = 1;
-//    private boolean loading = false;
+    private int page = 1;
+    private boolean loading = false;
 
     @Override
     public int getLayoutId() {
@@ -100,14 +100,14 @@ public class HomeActivity extends BaseActivity {
         });
 
         //设置滚动监听
-//        mEssayRv.addOnScrollListener(mScrollListener);
+        mEssayRv.addOnScrollListener(mScrollListener);
 
         //设置下拉刷新的事件
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 essayList.clear();
-//                page = 0;
+                page = 1;
                 new LatestEssayTask().execute();
             }
         });
@@ -122,7 +122,7 @@ public class HomeActivity extends BaseActivity {
     }
 
     //等待后端添加分页属性
-    /*RecyclerView.OnScrollListener mScrollListener = new RecyclerView.OnScrollListener() {
+    RecyclerView.OnScrollListener mScrollListener = new RecyclerView.OnScrollListener() {
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
@@ -133,11 +133,11 @@ public class HomeActivity extends BaseActivity {
             int lastVisibleItemPosition = linearLayoutManager.findLastVisibleItemPosition();
             if (!loading && totalItemCount < (lastVisibleItemPosition + 3)){
                 loading =true;
-                page = page+20;
+                page = page+1;
                 new LatestEssayTask().execute();
             }
         }
-    };*/
+    };
 
     /**
      * Item点击监听
@@ -173,7 +173,7 @@ public class HomeActivity extends BaseActivity {
     };
 
     protected void getNetData(){
-        OkGo.<EssayReceiver>get(Constants.ESSAY_URL+Constants.ESSAY_CONTENT+"/showAll")
+        OkGo.<EssayReceiver>get(Constants.ESSAY_URL+Constants.ESSAY_CONTENT+"/showAll/"+page+"/5")
                 .tag(this)
                 .execute(new JsonCallback<EssayReceiver>() {
                     @Override
@@ -188,7 +188,7 @@ public class HomeActivity extends BaseActivity {
         protected void onPreExecute() {
             super.onPreExecute();
             //需要修改后端添加分页属性
-            /*if(essayList != null&&essayList.size()>0){
+            if(essayList != null&&essayList.size()>0){
                 //添加footer
 //                NewsInfo newsInfoTemp = new NewsInfo();
                 essayList.add(null);
@@ -196,25 +196,30 @@ public class HomeActivity extends BaseActivity {
                 // 被插入了一条数据的时候可以使用这个方法刷新，
                 // 注意这个方法调用后会有插入的动画，这个动画可以使用默认的，也可以自己定义。
                 mEssayAdapter.notifyItemInserted(essayList.size() -1);
-            }*/
+            }
         }
 
         @Override
         protected void onPostExecute(List<Essay> essays) {
             super.onPostExecute(essays);
+            /*
+            * essays与moreEssayList相关联，只能在录入到essayList之后删除
+            * */
+//            moreEssayList.clear();
             if(mSwipeRefreshLayout != null){
                 mSwipeRefreshLayout.setRefreshing(false);
             }
             if(essayList.size() == 0){
                 essayList.addAll(essays);
                 checkIsEmpty(essayList);
+                moreEssayList.clear();
                 mEssayAdapter.notifyDataSetChanged();
             }else{
                 //删除footer
                 essayList.remove(essayList.size() -1);
                 essayList.addAll(essays);
                 mEssayAdapter.notifyDataSetChanged();
-//                loading =false;
+                loading =false;
             }
         }
 

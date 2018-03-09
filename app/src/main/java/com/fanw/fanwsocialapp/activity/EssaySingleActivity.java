@@ -66,6 +66,8 @@ public class EssaySingleActivity extends AppCompatActivity {
     private List<Comment> commentList = new ArrayList<Comment>();
     private List<Comment> moreCommentList = new ArrayList<Comment>();
     private CommentAdapter commentAdapter;
+    private int page = 1;
+    private boolean loading = false;
 
     private enum CollapsingToolbarLayoutState {
         EXPANDED,
@@ -94,6 +96,17 @@ public class EssaySingleActivity extends AppCompatActivity {
         comments_swipe = findViewById(R.id.comments_swipe);
         new_comment_content = findViewById(R.id.new_comment_content);
         new_comment_send = findViewById(R.id.new_comment_send);
+        new_comment_send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences pre = getSharedPreferences("current_user", Context.MODE_PRIVATE);
+                    int user_id = pre.getInt("user_id",0);
+                    String comment_content = new_comment_content.getText().toString();
+                    if (user_id != 0 && !comment_content.equals("")) {
+                        createOneComment(comment_content, user_id, mEssay.getEssay_id());
+                    }
+            }
+        });
         essay_single_playButton_user_head = findViewById(R.id.essay_single_playButton_user_head);
     }
 
@@ -142,8 +155,23 @@ public class EssaySingleActivity extends AppCompatActivity {
         essay_single_comments.setLayoutManager(new LinearLayoutManager(mContext));
         essay_single_comments.setAdapter(commentAdapter);
         commentAdapter.setOnItemClickListener(onItemClickListener);
-        //设置初始状态加载动画
+        essay_single_comments.addOnScrollListener(mScrollListener);
+        /*
+        * SwipeRefreshLayout覆盖了RecyclerView
+        * */
+        new LatestCommentTask().execute();
+        //设置样式
         comments_swipe.setColorSchemeColors(Color.RED,Color.BLUE);
+        //下拉刷新
+        comments_swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                commentList.clear();
+                page = 1;
+                new LatestCommentTask().execute();
+            }
+        });
+        //设置初始状态加载动画
         comments_swipe.post(new Runnable() {
             @Override
             public void run() {
@@ -154,7 +182,7 @@ public class EssaySingleActivity extends AppCompatActivity {
     }
 
     //等待后端添加分页属性
-    /*RecyclerView.OnScrollListener mScrollListener = new RecyclerView.OnScrollListener() {
+    RecyclerView.OnScrollListener mScrollListener = new RecyclerView.OnScrollListener() {
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
@@ -165,11 +193,11 @@ public class EssaySingleActivity extends AppCompatActivity {
             int lastVisibleItemPosition = linearLayoutManager.findLastVisibleItemPosition();
             if (!loading && totalItemCount < (lastVisibleItemPosition + 3)){
                 loading =true;
-                page = page+20;
-                new LatestEssayTask().execute();
+                page = page+1;
+                new LatestCommentTask().execute();
             }
         }
-    };*/
+    };
 
     /**
      * Item点击监听
@@ -182,13 +210,13 @@ public class EssaySingleActivity extends AppCompatActivity {
                     Intent intent = new Intent(mContext,PersonalActivity.class);
                     intent.putExtra("user_id",commentList.get(position).getUser().getUser_id());
                     startActivity(intent);
-                case R.id.new_comment_send:
-                    SharedPreferences pre = getSharedPreferences("current_user", Context.MODE_PRIVATE);
-                    int user_id = pre.getInt("user_id",0);
-                    String comment_content = new_comment_content.getText().toString();
-                    if (user_id != 0 && !comment_content.equals("")){
-                        createOneComment(comment_content,user_id,mEssay.getEssay_id());
-                    }
+//                case R.id.new_comment_send:
+//                    SharedPreferences pre = getSharedPreferences("current_user", Context.MODE_PRIVATE);
+//                    int user_id = pre.getInt("user_id",0);
+//                    String comment_content = new_comment_content.getText().toString();
+//                    if (user_id != 0 && !comment_content.equals("")){
+//                        createOneComment(comment_content,user_id,mEssay.getEssay_id());
+//                    }
 
                 default:
                 /*case R.id.cv_Delete:
@@ -203,8 +231,8 @@ public class EssaySingleActivity extends AppCompatActivity {
     private void createOneComment(String comment_content,int user_id,int essay_id){
         OkGo.<EssayReceiver>post(Constants.ESSAY_URL+Constants.ESSAY_comment+"/create")
                 .tag(this)
-                .params("user_id",user_id)
-                .params("essay_id",essay_id)
+                .params("user.user_id",user_id)
+                .params("essay.essay_id",essay_id)
                 .params("comment_content",comment_content)
                 .execute(new JsonCallback<EssayReceiver>() {
                     @Override
@@ -262,8 +290,9 @@ public class EssaySingleActivity extends AppCompatActivity {
     }
 
     protected void getNetData(){
-        OkGo.<EssayReceiver>get(Constants.ESSAY_URL+Constants.ESSAY_comment+"/showAll")
+        OkGo.<EssayReceiver>post(Constants.ESSAY_URL+Constants.ESSAY_comment+"/showAll/"+page+"/7")
                 .tag(this)
+                .params("essay_id",mEssay.getEssay_id())
                 .execute(new JsonCallback<EssayReceiver>() {
                     @Override
                     public void onSuccess(Response<EssayReceiver> response) {
@@ -278,31 +307,33 @@ public class EssaySingleActivity extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
             //需要修改后端添加分页属性
-            /*if(commentList != null&&commentList.size()>0){
+            if(commentList != null&&commentList.size()>0){
                 //添加footer
                 commentList.add(null);
                 // notifyItemInserted(int position)，这个方法是在第position位置
                 // 被插入了一条数据的时候可以使用这个方法刷新，
                 // 注意这个方法调用后会有插入的动画，这个动画可以使用默认的，也可以自己定义。
                 commentAdapter.notifyItemInserted(commentList.size() -1);
-            }*/
+            }
         }
 
         @Override
         protected void onPostExecute(List<Comment> comments) {
             super.onPostExecute(comments);
+
             if(comments_swipe != null){
                 comments_swipe.setRefreshing(false);
             }
             if(commentList.size() == 0){
                 commentList.addAll(comments);
+                moreCommentList.clear();
                 commentAdapter.notifyDataSetChanged();
             }else{
                 //删除footer
                 commentList.remove(commentList.size() -1);
                 commentList.addAll(comments);
                 commentAdapter.notifyDataSetChanged();
-//                loading =false;
+                loading =false;
             }
         }
 
