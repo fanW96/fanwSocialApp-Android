@@ -36,7 +36,7 @@ public class Constants {
     public static final String VIDEO_URL = "http://gank.io/api/data/休息视频/10/1";
     public static final String PHOTO_URL = "http://gank.io/api/data/福利/10/1";
 
-    public static final String ESSAY_URL = "http://159.89.150.30:8888/";
+    public static final String ESSAY_URL = "http://192.168.56.1:8888/";
     public static final String ESSAY_USER ="user";
     public static final String ESSAY_RELATION ="relation";
     public static final String ESSAY_PROFILE ="profile";
