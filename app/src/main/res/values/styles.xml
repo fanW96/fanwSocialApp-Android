@@ -45,4 +45,12 @@
         <item name="android:layout_height">?attr/actionBarSize</item>
     </style>
 
+    <!--crop style-->
+    <style name="AppThemeCrop" parent="Theme.AppCompat.Light">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
 </resources>

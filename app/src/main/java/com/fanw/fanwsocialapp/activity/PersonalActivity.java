@@ -132,6 +132,14 @@ public class PersonalActivity extends AppCompatActivity {
         person_rv.setAdapter(personEssayAdapter);
         personEssayAdapter.setOnItemClickListener(onItemClickListener);
         person_rv.addOnScrollListener(mScrollListener);
+        person_user_head.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent  = new Intent(mContext,ModifyHeadActivity.class);
+                intent.putExtra("head_url",Constants.ESSAY_URL+Constants.ESSAY_HEAD+profile.getUser().getUser_head());
+                startActivityForResult(intent,0);
+            }
+        });
 //        personEssayAdapter.setHeaderView(header);
         //设置初始状态加载动画
         person_swipe_refresh.setColorSchemeColors(Color.RED,Color.BLUE);
@@ -230,6 +238,16 @@ public class PersonalActivity extends AppCompatActivity {
         SharedPreferences pre = getSharedPreferences("current_user", Context.MODE_PRIVATE);
         if (pre.getInt("user_id",0) != user_id){
             person_modify_or_follow.setImageResource(R.drawable.ic_add);
+            //TODO:关注请求
+        }else{
+            person_modify_or_follow.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mContext,PersonModifyActivity.class);
+                    intent.putExtra("profile_data",profile);
+                    startActivity(intent);
+                }
+            });
         }
         person_user_name.setText(profile.getUser().getUser_name());
         if (profile.isProfile_sex() == true){
@@ -352,5 +370,10 @@ public class PersonalActivity extends AppCompatActivity {
             }
             return moreEssayList;
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

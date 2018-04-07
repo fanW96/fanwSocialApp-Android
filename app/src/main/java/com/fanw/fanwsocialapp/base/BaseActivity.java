@@ -29,6 +29,7 @@ import android.widget.Toast;
 import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.fanw.fanwsocialapp.R;
+import com.fanw.fanwsocialapp.activity.ChatActivity;
 import com.fanw.fanwsocialapp.activity.HomeActivity;
 import com.fanw.fanwsocialapp.activity.LoginActivity;
 import com.fanw.fanwsocialapp.activity.NewsActivity;
@@ -194,6 +195,7 @@ public abstract class BaseActivity extends AppCompatActivity
                 mClass = PhotoActivity.class;
                 break;
             case R.id.nav_message:
+                mClass = ChatActivity.class;
                 break;
             case R.id.nav_comment:
                 break;

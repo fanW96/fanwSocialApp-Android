@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/fanwSocialApp.iml" filepath="$PROJECT_DIR$/fanwSocialApp.iml" />
       <module fileurl="file://$PROJECT_DIR$/fanwSocialApp-Android.iml" filepath="$PROJECT_DIR$/fanwSocialApp-Android.iml" />
       <module fileurl="file://$PROJECT_DIR$/ijkplayerlibrary/ijkplayerlibrary.iml" filepath="$PROJECT_DIR$/ijkplayerlibrary/ijkplayerlibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/imagepicker/imagepicker.iml" filepath="$PROJECT_DIR$/imagepicker/imagepicker.iml" />

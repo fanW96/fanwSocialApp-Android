@@ -1,10 +1,12 @@
 package com.fanw.fanwsocialapp.model;
 
+import java.io.Serializable;
+
 /**
  * Created by fanw on 2018/2/9.
  */
 
-public class Profile {
+public class Profile implements Serializable{
 
     private int profile_id;
     private String profile_sign;
